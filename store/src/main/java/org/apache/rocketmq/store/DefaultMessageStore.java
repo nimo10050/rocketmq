@@ -366,6 +366,7 @@ public class DefaultMessageStore implements MessageStore {
             return new PutMessageResult(PutMessageStatus.SERVICE_NOT_AVAILABLE, null);
         }
 
+        // 这里抛异常是为什么
         if (!this.runningFlags.isWriteable()) {
             long value = this.printTimes.getAndIncrement();
             if ((value % 50000) == 0) {
@@ -1597,7 +1598,7 @@ public class DefaultMessageStore implements MessageStore {
 
         private boolean isSpaceToDelete() {
             double ratio = DefaultMessageStore.this.getMessageStoreConfig().getDiskMaxUsedSpaceRatio() / 100.0;
-
+            System.out.println("===isSpaceToDelete===");
             cleanImmediately = false;
 
             {
@@ -1650,6 +1651,8 @@ public class DefaultMessageStore implements MessageStore {
                     return true;
                 }
             }
+
+            System.out.println("====== " + runningFlags.getFlagBits() );
 
             return false;
         }

@@ -20,19 +20,25 @@ package org.apache.rocketmq.client.common;
 import java.util.Random;
 
 public class ThreadLocalIndex {
+    // 线程隔离
     private final ThreadLocal<Integer> threadLocalIndex = new ThreadLocal<Integer>();
     private final Random random = new Random();
 
     public int getAndIncrement() {
         Integer index = this.threadLocalIndex.get();
+        // 第一次进来需要拿到一个初始值
         if (null == index) {
+            // 拿到一个随机制
             index = Math.abs(random.nextInt());
+            // 注意 abs 是可能返回 复数的
             if (index < 0)
                 index = 0;
             this.threadLocalIndex.set(index);
         }
 
+        // +1
         index = Math.abs(index + 1);
+        // 溢出会变成负数
         if (index < 0)
             index = 0;
 

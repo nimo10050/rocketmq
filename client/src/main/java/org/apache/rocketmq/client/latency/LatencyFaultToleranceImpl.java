@@ -32,9 +32,12 @@ public class LatencyFaultToleranceImpl implements LatencyFaultTolerance<String> 
     @Override
     public void updateFaultItem(final String name, final long currentLatency, final long notAvailableDuration) {
         FaultItem old = this.faultItemTable.get(name);
+        // 不存在就新增，存在就更新
         if (null == old) {
             final FaultItem faultItem = new FaultItem(name);
+            // 需要隔离多久
             faultItem.setCurrentLatency(currentLatency);
+            // 什么时候解除隔离
             faultItem.setStartTimestamp(System.currentTimeMillis() + notAvailableDuration);
 
             old = this.faultItemTable.putIfAbsent(name, faultItem);
@@ -72,14 +75,17 @@ public class LatencyFaultToleranceImpl implements LatencyFaultTolerance<String> 
         }
 
         if (!tmpList.isEmpty()) {
+            // 洗牌
             Collections.shuffle(tmpList);
-
+            // 排序
             Collections.sort(tmpList);
 
             final int half = tmpList.size() / 2;
+            // 如果只有一个元素
             if (half <= 0) {
                 return tmpList.get(0).getName();
             } else {
+                // 假设总共 4 个元素， half = 2， 那么下列公司就是从 前两个 元素中选一个（类似二分查找？？？）
                 final int i = this.whichItemWorst.getAndIncrement() % half;
                 return tmpList.get(i).getName();
             }
@@ -131,6 +137,7 @@ public class LatencyFaultToleranceImpl implements LatencyFaultTolerance<String> 
         }
 
         public boolean isAvailable() {
+            // startTimestamp 是 broker 预计解除隔离的时间，如果当前时间大于这个时间， 说明 broker 可用。没毛病
             return (System.currentTimeMillis() - startTimestamp) >= 0;
         }
 

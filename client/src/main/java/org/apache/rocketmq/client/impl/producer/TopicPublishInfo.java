@@ -66,10 +66,13 @@ public class TopicPublishInfo {
         this.haveTopicRouterInfo = haveTopicRouterInfo;
     }
 
+    // lastBrokerName: 上一次执行消息发送时, 选择失败的 broker
     public MessageQueue selectOneMessageQueue(final String lastBrokerName) {
         if (lastBrokerName == null) {
+            // 说明之前都发送成功了
             return selectOneMessageQueue();
         } else {
+            // 走到这里， 说明上次发送失败了， 所以这里需要避过上次的 broker
             int index = this.sendWhichQueue.getAndIncrement();
             for (int i = 0; i < this.messageQueueList.size(); i++) {
                 int pos = Math.abs(index++) % this.messageQueueList.size();
@@ -85,7 +88,9 @@ public class TopicPublishInfo {
     }
 
     public MessageQueue selectOneMessageQueue() {
+        // 第一次取就是一个 random + 1， 如果溢出变成负数， 就是 0
         int index = this.sendWhichQueue.getAndIncrement();
+        // 取模 拿到具体的队列
         int pos = Math.abs(index) % this.messageQueueList.size();
         if (pos < 0)
             pos = 0;

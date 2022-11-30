@@ -94,6 +94,7 @@ public class AllocateMappedFileService extends ServiceThread {
             return null;
         }
 
+        // 总共需要创建两个 commitlog 文件，这里只需要关心第一个创建成功即可。
         AllocateRequest result = this.requestTable.get(nextFilePath);
         try {
             if (result != null) {

@@ -83,7 +83,7 @@ public class NamesrvController {
             Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(), new ThreadFactoryImpl("RemotingExecutorThread_"));
 
         this.registerProcessor();
-
+        // 每隔 10s 扫描未激活的 broker 节点
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override

@@ -195,7 +195,11 @@ public class MappedFileQueue {
         long createOffset = -1;
         MappedFile mappedFileLast = getLastMappedFile();
 
+        // 什么情况下可能为空
+        // 0 - （0 % size）
         if (mappedFileLast == null) {
+            // 这里为什么要这么计算 ?
+            // 难道还能指定 startOffset ???
             createOffset = startOffset - (startOffset % this.mappedFileSize);
         }
 
@@ -232,6 +236,7 @@ public class MappedFileQueue {
 
         return mappedFileLast;
     }
+
 
     public MappedFile getLastMappedFile(final long startOffset) {
         return getLastMappedFile(startOffset, true);

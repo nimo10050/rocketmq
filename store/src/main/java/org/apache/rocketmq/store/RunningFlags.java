@@ -68,7 +68,7 @@ public class RunningFlags {
         }
         return result;
     }
-
+// 30 = 16 + 8 + 4 +2 = 11111
     public boolean isWriteable() {
         if ((this.flagBits & (NOT_WRITEABLE_BIT | WRITE_LOGICS_QUEUE_ERROR_BIT | DISK_FULL_BIT | WRITE_INDEX_FILE_ERROR_BIT)) == 0) {
             return true;

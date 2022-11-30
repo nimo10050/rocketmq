@@ -209,6 +209,7 @@ public class UtilAll {
             if (!file.exists())
                 return -1;
 
+
             long totalSpace = file.getTotalSpace();
 
             if (totalSpace > 0) {
